@@ -7,24 +7,24 @@
 #include "umalloc.h"
 
 void 
-shader_set1f(shader_t *shader, const char *str, f32 val)
+shader_set1f(Shader *shader, const char *str, f32 val)
 {
 	glUniform1f(glGetUniformLocation(shader->program, str), val);
 }
 
 void
-shader_set4f(shader_t *shader,const char *str, f32 v0 ,f32 v1 ,f32 v2 ,f32 v3)
+shader_set4f(Shader *shader,const char *str, f32 v0 ,f32 v1 ,f32 v2 ,f32 v3)
 {
 	glUniform4f(glGetUniformLocation(shader->program, str), v0 ,v1 ,v2 ,v3);
 }
 
 void
-shader_set4fv(shader_t *shader, const char *str, mat4_t mat)
+shader_set4fv(Shader *shader, const char *str, Mat4 mat)
 {
-	glUniformMatrix4fv(glGetUniformLocation(shader->program, str),1, GL_TRUE, (const GLfloat*)mat.buf);
+	glUniformMatrix4fv(glGetUniformLocation(shader->program, str),1, GL_TRUE, (const GLfloat*)&mat);
 }
 
-shader_t*
+Shader*
 shader_create(const char *filename_vertex, const char *filename_fragment)
 {
 	FILE *v_ptr = fopen(filename_vertex, "r");
@@ -32,9 +32,10 @@ shader_create(const char *filename_vertex, const char *filename_fragment)
 	if (v_ptr == NULL || f_ptr == NULL) {
 		printf("fopen() failed\n");
 		return NULL;
+		exit(1);
 	}
 
-	shader_t *tmp = ALLOC(sizeof(shader_t), MEMORY_STATS_TAG_SHADER);
+	Shader *tmp = ALLOC(sizeof(Shader), MEMORY_STATS_TAG_SHADER);
 	
 	tmp->filename_vertex =		ALLOC(sizeof(char) * 50, MEMORY_STATS_TAG_STRING);
 	tmp->filename_fragment =	ALLOC(sizeof(char) * 50, MEMORY_STATS_TAG_STRING);
@@ -92,7 +93,7 @@ shader_create(const char *filename_vertex, const char *filename_fragment)
 }
 
 void
-shader_destroy(shader_t *shader)
+shader_destroy(Shader *shader)
 {
 	glDeleteShader(shader->vhandle);
 	glDeleteShader(shader->fhandle);
@@ -100,11 +101,11 @@ shader_destroy(shader_t *shader)
 	FREE(shader->filename_vertex,	sizeof(char) * 50,	MEMORY_STATS_TAG_STRING);
 	FREE(shader->filename_fragment, sizeof(char) * 50,	MEMORY_STATS_TAG_STRING);
 
-	FREE(shader,					sizeof(shader_t),	MEMORY_STATS_TAG_SHADER);
+	FREE(shader,					sizeof(Shader),	MEMORY_STATS_TAG_SHADER);
 }
 
 void
-shader_use(shader_t *shader)
+shader_use(Shader *shader)
 {
 	glUseProgram(shader->program);
 }

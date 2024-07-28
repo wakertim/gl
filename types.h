@@ -13,13 +13,17 @@ typedef signed int i32;
 typedef float f32;
 typedef double f64;
 
-typedef struct mat4_t {
-	f32 buf[4][4];
-} mat4_t;
+typedef struct Mat4{
+	f32 data[16];
+} Mat4;
 
-typedef struct vec4_t {
+typedef struct Vec4 {
 	f32 data[4];
-} vec4_t;
+} Vec4;
+
+typedef struct Vec3 {
+	f32 data[3];
+} Vec3;
 
 	
 #endif // TYPES_H

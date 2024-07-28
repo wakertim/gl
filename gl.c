@@ -14,9 +14,10 @@
 
 #define GL_LOAD_FUNCTION_POINTERS
 #include "gl_load_util.h"
-shader_t *shader_g;
-Mat4 rotate_matrix;
-Mat4 scale_matrix;
+
+Shader *shader_g;
+
+Mat4 model_g;
 
 f32 quad[] = {
 	0.5, 0.5f, 0.0f,	 // 0
@@ -44,7 +45,7 @@ f32 triangle [] = {
 GLuint element_data[6] = {0, 1, 2, 3, 4, 5};
 
 void hotreload_shader() {
-	shader_create("shader/vert.glsl", "shader/frag.glsl");
+	shader_create("vert.glsl", "frag.glsl");
 }
 
 u32
@@ -73,11 +74,10 @@ array_buffer_create(u32 num, u32 total_elements, u32 offset, void *data)
 void
 gl_input(char ch) 
 {
-	f32 translate_value = 0.1f;
+	f32 translate_value = 1.0f;
 	static float xval, yval, zval;
 	if (ch == 'a') {
-		xval -= translate_value;
-		shader_set1f(shader_g, "u_xoffset", xval);
+	//	camera_g = mat4_mul(camera_g, mat4_translation((Vec3){0.1f, 0.0f, 0.0f}));
 	}
 
 	if (ch == 'u') {
@@ -127,7 +127,10 @@ gl_init()
 	/* load all funtion ponters */
 	gl_load_util();
 
-	glEnable(GL_DEPTH_TEST); 
+	glEnable(GL_DEPTH_TEST);  
+	glEnable(GL_CULL_FACE);  
+	glFrontFace(GL_CCW);
+	glCullFace(GL_BACK);
 	glDepthFunc(GL_ALWAYS); 
 
 	u32 vao;
@@ -139,24 +142,29 @@ gl_init()
 	glBindVertexArray(0);
 
 	shader_g = 
-	shader_create("shader/vert.glsl", "shader/frag.glsl");
+	shader_create("vert.glsl", "frag.glsl");
 	shader_use(shader_g);
 	shader_set4f(shader_g, "uniform_color", 0.3f, 0.2f, 0.5f, 1.0f);
 
-	Mat4 translate_matrix = Mat4ranslate(mat4_create(1.0f), 0.0f, 0.0f, 0.0f);
-	scale_matrix = mat4_scale(mat4_create(1.0f), 1.0f, 1.0f, 1.0f);
-	rotate_matrix = mat4_rotate_z(mat4_create(1.0f), 45.0f);
-	//Mat4 view_matrix = mat4_view(45.0f, 0.1f, 1000.0f);
+	model_g = mat4_identity();
+	model_g = mat4_mul(model_g, mat4_translation((Vec3){0.0f, 0.0f, 1.0f}));
+	model_g = mat4_mul(model_g, mat4_scale((Vec3){1.0f, 1.0f, 1.0f}));
+	model_g = mat4_mul(model_g, mat4_rotate_z(0.0f));
 
-	mat4_print(rotate_matrix);
-	shader_set4fv(shader_g, "translate_matrix", translate_matrix);
-	shader_set4fv(shader_g, "scale_matrix", scale_matrix);
-	shader_set4fv(shader_g, "rotate_matrix", rotate_matrix);
-	//shader_set4fv(shader_g, "view_matrix", view_matrix);
+	/*camera_g = mat4_identity();*/
+	/*	camera_g = mat4_mul(camera_g, mat4_translation((Vec3){0.0f, 0.0f, 0.0f}));*/
+	/*camera_g = mat4_mul(camera_g, mat4_rotate_z(0.0f));*/
+	/*camera_g = mat4_inverse(camera_g);*/
+	/**/
+	/*camera_g = mat4_mul(camera_g, model_g);*/
+	/**/
+	Mat4 perspective = mat4_perspective(PI/2, 1.0f, 0.1f, 1000.0f);
 
-	shader_set1f(shader_g, "u_yoffset", 0.0f);
-	shader_set1f(shader_g, "u_xoffset", 0.0f);
-	shader_set1f(shader_g, "u_zoffset", 0.0f);
+
+	shader_set4fv(shader_g, "M", model_g);
+	shader_set4fv(shader_g, "P" ,perspective);
+
+
 	glBindVertexArray(vao);
 }
 

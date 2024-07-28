@@ -124,43 +124,45 @@ typedef long int		GLsizeiptr; /*Custom*/
 
 #define GL_FRONT_AND_BACK			0x0408
 
-#define GL_FUNCTIONS_INFO																																			\
-	X(void,		Clear,						GLbitfield																											)	\
-	X(void,		ClearColor,					GLclampf,		GLclampf,			GLclampf,			GLclampf													)	\
-	X(void,		GenBuffers, 				GLsizei,		GLuint*																								)	\
-	X(void,		BindBuffer,					GLenum,			GLuint																								)	\
-	X(void,		BufferData,					GLenum,			GLsizeiptr, 		const GLvoid*,		GLenum														)	\
-	X(GLuint,	CreateShader,				GLenum																												)	\
-	X(void,		ShaderSource,				GLuint,			GLsizei,			GLchar**,			GLint*														)	\
-	X(void,		CompileShader,				GLuint																												)	\
-	X(void,		GetShaderiv,				GLuint shader,	GLenum pname,		GLint *params																	)	\
-	X(void,		GetShaderInfoLog,			GLuint shader,	GLsizei maxLength,	GLsizei *length,	GLchar *infoLog												)	\
-	X(GLuint,	CreateProgram																																	)	\
-	X(void,		AttachShader,				GLuint,			GLuint																								)	\
-	X(void,		LinkProgram,				GLuint																												)	\
-	X(void,		UseProgram,					GLuint																												)	\
-	X(void,		DrawArrays,					GLenum mode,	GLint first,		GLsizei	count																	)	\
-	X(void,		VertexAttribPointer,		GLuint index,	GLint size,			GLenum type,		GLboolean normalized,	GLsizei stride,		const GLvoid *	)	\
-	X(void,		EnableVertexAttribArray,	GLuint index																										)	\
-	X(void,		DisableVertexAttribArray,	GLuint index																										)	\
-	X(void,		GenVertexArrays,			GLsizei n,		GLuint *arrays																						)	\
-	X(void,		BindVertexArray,			GLuint array																										)	\
-	X(void,		DrawElements,				GLenum mode,	GLsizei count,		GLenum type,		const void * indices										)	\
-	X(void,		PolygonMode,				GLenum face,	GLenum mode																							)	\
-	X(GLint,	GetUniformLocation,			GLuint program,	const GLchar *name																					)	\
-	X(void,		Uniform4f,					GLint location, GLfloat v0,			GLfloat v1,			GLfloat v2,				GLfloat v3							)	\
-	X(void,		Uniform1f,					GLint location, GLfloat v0																							)	\
-	X(void,		DeleteShader,				GLuint shader																										)	\
-	X(void,		UniformMatrix4fv,			GLint location,	GLsizei count,		GLboolean transpose,const GLfloat *value										)	\
-	X(void,		GetUniformfv,				GLuint program, GLint location,		GLfloat *params																	)	\
-	X(void,		Enable,						GLenum cap																											)	\
-	X(void,		Disable,					GLenum cap																											)	\
-	X(void,		DepthFunc,					GLenum func																											)	\
+#define GL_FUNCTIONS_INFO										\
+	X(void,		Clear, GLbitfield)\
+	X(void,		ClearColor, GLclampf, GLclampf,	GLclampf, GLclampf)\
+	X(void,		GenBuffers, GLsizei, GLuint*)\
+	X(void,		BindBuffer, GLenum, GLuint)\
+	X(void,		BufferData, GLenum, GLsizeiptr,	const GLvoid*, GLenum)\
+	X(GLuint,	CreateShader, GLenum)\
+	X(void,		ShaderSource,GLuint, GLsizei, GLchar**,	GLint*)\
+	X(void,		CompileShader, GLuint)\
+	X(void,		GetShaderiv, GLuint shader, GLenum pname, GLint *params)\
+	X(void,		GetShaderInfoLog, GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog)\
+	X(GLuint,	CreateProgram)\
+	X(void,		AttachShader, GLuint, GLuint)\
+	X(void,		LinkProgram, GLuint)\
+	X(void,		UseProgram, GLuint)\
+	X(void,		DrawArrays, GLenum mode, GLint first, GLsizei count)\
+	X(void,		VertexAttribPointer, GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const GLvoid*)\
+	X(void,		EnableVertexAttribArray, GLuint index)\
+	X(void,		DisableVertexAttribArray, GLuint index)\
+	X(void,		GenVertexArrays, GLsizei n, GLuint *arrays)\
+	X(void,		BindVertexArray, GLuint array)\
+	X(void,		DrawElements, GLenum mode, GLsizei count, GLenum type, const void* indices)\
+	X(void,		PolygonMode, GLenum face, GLenum mode)\
+	X(GLint,	GetUniformLocation, GLuint program, const GLchar *name)\
+	X(void,		Uniform4f, GLint location, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3)\
+	X(void,		Uniform1f, GLint location, GLfloat v0)\
+	X(void,		DeleteShader, GLuint shader)\
+	X(void,		UniformMatrix4fv, GLint location, GLsizei count, GLboolean transpose, const GLfloat *value)\
+	X(void,		GetUniformfv, GLuint program, GLint location, GLfloat *params)\
+	X(void,		Enable,	GLenum cap)\
+	X(void,		Disable, GLenum cap)\
+	X(void,		CullFace, GLenum mode)\
+	X(void,		FrontFace, GLenum mode)\
+	X(void,		DepthFunc, GLenum func)\
 
 #ifdef GL_LOAD_FUNCTION_POINTERS
-#define X(ret, name, ...)								\
-	typedef ret(*PFN_gl##name)(__VA_ARGS__);			\
-	PFN_gl##name gl##name = NULL;						\
+#define X(ret, name, ...)			\
+	typedef ret(*PFN_gl##name)(__VA_ARGS__);\
+	PFN_gl##name gl##name = NULL;		\
 
 	GL_FUNCTIONS_INFO
 #undef X
@@ -172,12 +174,12 @@ void gl_load_util() {
 		printf("dlopen() filed\n");
 	}
 
-	#define X(ret, name, ...)									\
-		gl##name = dlsym(libGL, "gl" #name);					\
-		if ( gl##name == NULL ) {								\
-			printf("dlsym() failed to open gl functions\n");	\
-			exit(1);											\
-		}														\
+	#define X(ret, name, ...)			\
+		gl##name = dlsym(libGL, "gl" #name);	\
+		if ( gl##name == NULL ) {		\
+			printf("dlsym() failed to open gl functions\n");\
+			exit(1);					\
+		}							\
 
 		GL_FUNCTIONS_INFO
 	#undef X
@@ -185,9 +187,9 @@ void gl_load_util() {
 
 #else  /* GL_LOAD_FUNCTION_POINTERS */
 
-#define X(ret, name, ...)								\
-	typedef ret(*PFN_gl##name)(__VA_ARGS__);			\
-	extern PFN_gl##name gl##name;						\
+#define X(ret, name, ...)					\
+	typedef ret(*PFN_gl##name)(__VA_ARGS__);		\
+	extern PFN_gl##name gl##name;				\
 
 	GL_FUNCTIONS_INFO
 #undef X	

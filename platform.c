@@ -17,7 +17,7 @@ typedef struct {
 } X11_Window;
 static X11_Window state_window;
 
-static void x11_window_create(u32 height, u32 width, const char *title) {
+static void x11_window_create(u32 width, u32 height, const char *title) {
 	state_window.display = XOpenDisplay(NULL);
 	if (state_window.display == NULL) {
 		printf("XOpenDisplay() failed\n");
