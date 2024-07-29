@@ -17,6 +17,26 @@
 
 Shader *shader_g;
 
+
+Mat4 cameraGetViewMatrix(Camera *c) {
+	return c->view_matrix;
+}
+
+Camera* cameraCreate() {
+	Camera *c = malloc(sizeof(Camera));
+	memset(c, 0, sizeof(Camera));
+	c->position.data[0] = 0.0f;
+	c->position.data[1] = 0.0f;
+	c->position.data[2] = 0.0f;
+
+	c->rotation.data[0] = 0.0f;
+	c->rotation.data[1] = 0.0f;
+	c->rotation.data[2] = 0.0f;
+	c->view_matrix = mat4_identity();
+	c->view_matrix = mat4_inverse(c->view_matrix);
+	return c;
+}
+
 Mat4 model_g;
 
 f32 quad[] = {
@@ -149,21 +169,14 @@ gl_init()
 	model_g = mat4_identity();
 	model_g = mat4_mul(model_g, mat4_translation((Vec3){0.0f, 0.0f, 1.0f}));
 	model_g = mat4_mul(model_g, mat4_scale((Vec3){1.0f, 1.0f, 1.0f}));
-	model_g = mat4_mul(model_g, mat4_rotate_z(0.0f));
+	model_g = mat4_mul(model_g, mat4_rotate_z(45.0f));
 
-	/*camera_g = mat4_identity();*/
-	/*	camera_g = mat4_mul(camera_g, mat4_translation((Vec3){0.0f, 0.0f, 0.0f}));*/
-	/*camera_g = mat4_mul(camera_g, mat4_rotate_z(0.0f));*/
-	/*camera_g = mat4_inverse(camera_g);*/
-	/**/
-	/*camera_g = mat4_mul(camera_g, model_g);*/
-	/**/
+	Camera *c = cameraCreate();
 	Mat4 perspective = mat4_perspective(PI/2, 1.0f, 0.1f, 1000.0f);
 
-
 	shader_set4fv(shader_g, "M", model_g);
-	shader_set4fv(shader_g, "P" ,perspective);
-
+	shader_set4fv(shader_g, "P" , perspective);
+	shader_set4fv(shader_g, "V" , cameraGetViewMatrix(c));
 
 	glBindVertexArray(vao);
 }

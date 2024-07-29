@@ -15,7 +15,7 @@ int main2 ()
 	Vec3 scalar = {10.0f, 10.0f, 10.0f};
 
 	Mat4 scale 		= mat4_scale(scalar);
-	Mat4 rotate		= mat4_rotate_z(180.0f);
+	Mat4 rotate		= mat4_rotate_z(10.0f);
 	Mat4 translation 	= mat4_translation(pos);
 
 	Mat4 model 	= mat4_identity();

@@ -18,11 +18,16 @@ typedef struct Mat4{
 } Mat4;
 
 typedef struct Vec4 {
-	f32 data[4];
+	f32 x;
+	f32 y;
+	f32 z;
+	f32 w;
 } Vec4;
 
 typedef struct Vec3 {
-	f32 data[3];
+	f32 x;
+	f32 y;
+	f32 z;
 } Vec3;
 
 	
